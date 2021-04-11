@@ -16,7 +16,10 @@ provider:
   region: us-east-1
 
   environment:
-    tableName: quotes
+    quotesTableName: quotes
+    policiesTableName: policies
+    dogBreedsTableName: breeds_dog
+    catBreedsTableName: breeds_cat
 
   iamRoleStatements:
     - Effect: Allow
@@ -31,8 +34,21 @@ provider:
       Resource: "arn:aws:dynamodb:us-east-1:*:*"
 
 functions:
-  create:
-    handler: lambda.handler
+  search:
+    handler: search.main
     events:
       - http:
           method: post
+          path: /
+          cors: true
+  policies:
+    handler: listPolicies.main
+    events:
+      - http:
+          method: get
+          path: /policies
+          cors: true
+
+
+resources:
+  - ${file(resources/api-gateway-errors.yml)}

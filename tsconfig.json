@@ -5,7 +5,6 @@
     "lib": ["es2018"],
     "declaration": true,
     "strict": true,
-    "noImplicitAny": true,
     "strictNullChecks": true,
     "noImplicitThis": true,
     "alwaysStrict": true,
@@ -17,7 +16,10 @@
     "inlineSources": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
-    "typeRoots": ["./node_modules/@types"]
+    "typeRoots": ["./node_modules/@types"],
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "noImplicitAny": false
   },
-  "include": ["lib","src"]
+  "include": ["lib","src", "search.ts", "listPolicies.ts"]
 }

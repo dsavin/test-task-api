@@ -1,6 +1,6 @@
 import { APIGatewayProxyEventV2, APIGatewayProxyHandlerV2 } from "aws-lambda";
 
-export const handler: APIGatewayProxyHandlerV2 = async (
+export const main: APIGatewayProxyHandlerV2 = async (
   event: APIGatewayProxyEventV2
 ) => {
   console.log(event)
