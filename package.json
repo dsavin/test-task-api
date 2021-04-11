@@ -11,11 +11,17 @@
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.94.1",
-    "@types/aws-lambda": "^8.10.70"
+    "@types/aws-lambda": "^8.10.70",
+    "aws-sdk": "^2.884.0",
+    "serverless-bundle": "^4.2.3",
+    "serverless-dotenv": "*",
+    "serverless-dotenv-plugin": "^3.9.0",
+    "serverless-offline": "^6.9.0"
   },
   "dependencies": {
     "@aws-cdk/core": "1.94.1",
     "@serverless-stack/cli": "0.10.8",
-    "@serverless-stack/resources": "0.10.8"
+    "@serverless-stack/resources": "0.10.8",
+    "uuid": "^7.0.3"
   }
 }

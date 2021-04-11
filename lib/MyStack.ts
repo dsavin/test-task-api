@@ -8,6 +8,7 @@ export default class MyStack extends sst.Stack {
     const api = new sst.Api(this, "Api", {
       routes: {
         "GET /": "src/lambda.handler",
+        "POST /": "src/search.handler",
       },
     });
 
