@@ -19,6 +19,7 @@ export default class MyStack extends sst.Stack {
         breedId: sst.TableFieldType.STRING,
         name: sst.TableFieldType.STRING,
         priceModifier: sst.TableFieldType.NUMBER,
+        pet:  sst.TableFieldType.STRING,
       },
       primaryIndex: { partitionKey: "breedId" },
     });
