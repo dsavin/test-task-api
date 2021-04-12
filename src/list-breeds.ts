@@ -1,19 +1,26 @@
 
-import { APIGatewayProxyResult } from "aws-lambda";
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import dynamoDb from "../libs/dynamodb-lib";
 //import notes from "./notes";
 
-export async function main(): Promise<APIGatewayProxyResult> {
+export async function main(
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> {
   const params = {
-    TableName: process.env.breedsTableName,    
+    TableName: process.env.breedsTableName,
+    IndexName: "pet-index",
+    KeyConditionExpression: "#pet = :petType",
+    ExpressionAttributeNames:{
+        "#pet": "pet"
+    },
+    ExpressionAttributeValues: {
+        ":petType": event.pathParameters?.pet,
+    },
+
   };
 
-  console.log('test breeds')
 
-  const result = await dynamoDb.scan(params);
-
-  console.log(result)
-
+  const result = await dynamoDb.query(params);
 
   return {
     statusCode: 200,

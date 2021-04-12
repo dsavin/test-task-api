@@ -8,11 +8,7 @@ export async function main(): Promise<APIGatewayProxyResult> {
     TableName: process.env.policiesTableName,    
   };
 
-  console.log('test policies')
-
   const result = await dynamoDb.scan(params);
-
-  console.log(result)
 
 
   return {
