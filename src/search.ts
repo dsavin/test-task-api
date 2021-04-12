@@ -10,10 +10,10 @@ export async function main(
   let breed = { pet: '', priceModifier: 0, name: ''} as any;
   const petModifier = { cat: 1, dog: 1.034 };
   let finalPrice = 0
+  let data = {age:0,excess:0, breedId: 0, policyId: 0}
 
   if (event.body) {
-    const data = JSON.parse(event.body);
-
+    data = JSON.parse(event.body);
 
     
     // Getting data for price modification
@@ -47,8 +47,10 @@ export async function main(
 
     console.log(policy, breed)
 
-    finalPrice = parseFloat(policy?.basePrice.toString()) * parseFloat(petModifier[breed?.pet]) * parseFloat(breed?.priceModifier.toString()) * (data.age/1000) * (data.excess ? 1.044 : 1)
-    console.log(policy?.basePrice, petModifier[breed?.pet], breed?.priceModifier, (data.age/1000), finalPrice, (data.excess ? 1.044 : 1))
+    finalPrice = parseFloat(policy?.basePrice.toString()) * parseFloat(petModifier[breed?.pet]) * parseFloat(breed?.priceModifier.toString()) * (data.age/1000 + 1) * (data.excess ? 1.044 : 1)
+    console.log(policy?.basePrice, petModifier[breed?.pet], breed?.priceModifier, (data.age/1000+1), finalPrice, (data.excess ? 1.044 : 1))
+
+    console.log('final', finalPrice)
 
 
   }
@@ -66,8 +68,12 @@ export async function main(
       {
         "policyName": policy?.name,
         "breed": breed?.name,
+        "breedModifier": breed?.priceModifier,
+        "petModifier": petModifier[breed?.pet],
+        "ageCorrection": data.age/1000 +1,
+        "excessCorrection": data.excess ? 1.044 : 1,
         "basePrice": policy?.basePrice,
-        "finalPrice": 120.87,
+        "finalPrice": finalPrice.toFixed(2)
       }
     ]),
   };
