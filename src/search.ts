@@ -47,8 +47,8 @@ export async function main(
 
     console.log(policy, breed)
 
-    finalPrice = parseFloat(policy?.basePrice.toString()) * parseFloat(petModifier[breed?.pet]) * parseFloat(breed?.priceModifier.toString()) * (data.age/1000) * (data.excees ? 1.044 : 1)
-    console.log(policy?.basePrice, petModifier[breed?.pet], breed?.priceModifier, (data.age/1000), finalPrice, (data.excees ? 1.044 : 1))
+    finalPrice = parseFloat(policy?.basePrice.toString()) * parseFloat(petModifier[breed?.pet]) * parseFloat(breed?.priceModifier.toString()) * (data.age/1000) * (data.excess ? 1.044 : 1)
+    console.log(policy?.basePrice, petModifier[breed?.pet], breed?.priceModifier, (data.age/1000), finalPrice, (data.excess ? 1.044 : 1))
 
 
   }
