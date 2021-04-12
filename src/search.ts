@@ -1,29 +1,73 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-
+import { AttributeMap } from "aws-sdk/clients/dynamodb";
+import dynamoDb from "../libs/dynamodb-lib";
+import Policy from "../types/policies"
 
 export async function main(
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> {
-  
+  let policy = { basePrice: 0, name: ''} as any;
+  let breed = { pet: '', priceModifier: 0, name: ''} as any;
+  const petModifier = { cat: 1, dog: 1.034 };
+  let finalPrice = 0
 
   if (event.body) {
     const data = JSON.parse(event.body);
+
+
+    
+    // Getting data for price modification
+    const paramsBreed = {
+      TableName: process.env.breedsTableName,
+      KeyConditionExpression: "breedId = :breedId",
+
+      ExpressionAttributeValues: {
+          ":breedId": data.breedId.toString(),
+      },
+  
+    };
+
+
+    breed = (await dynamoDb.query(paramsBreed)).Items?.[0];
+    
+    const paramsPolicy = {
+      TableName: process.env.policiesTableName,
+      KeyConditionExpression: "policyId = :policyId",
+
+      ExpressionAttributeValues: {
+          ":policyId": data.policyId.toString(),
+      },
+  
+    };
+
+
+
+
+    policy = (await dynamoDb.query(paramsPolicy)).Items?.[0];
+
+    console.log(policy, breed)
+
+    finalPrice = parseFloat(policy?.basePrice.toString()) * parseFloat(petModifier[breed?.pet]) * parseFloat(breed?.priceModifier.toString()) * (data.age/1000) * (data.excees ? 1.044 : 1)
+    console.log(policy?.basePrice, petModifier[breed?.pet], breed?.priceModifier, (data.age/1000), finalPrice, (data.excees ? 1.044 : 1))
+
+
+  }
+
+  if(finalPrice === 0){
+    return {
+      statusCode: 404,
+      body: 'Cannot find quote'
+    }
   }
 
   return {
     statusCode: 200,
     body: JSON.stringify([
       {
-        "policyName": 'annual',
-        "breed": 'breedA',
-        "basePrice": 100,
+        "policyName": policy?.name,
+        "breed": breed?.name,
+        "basePrice": policy?.basePrice,
         "finalPrice": 120.87,
-      },
-      {
-        "policyName": 'annual',
-        "breed": 'daily',
-        "basePrice": 15,
-        "finalPrice": 15.6,
       }
     ]),
   };

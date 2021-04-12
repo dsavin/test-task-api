@@ -1,6 +1,5 @@
 import * as cdk from "@aws-cdk/core";
 import * as sst from "@serverless-stack/resources";
-import * as dynamodb from "@aws-cdk/aws-dynamodb";
 
 export default class MyStack extends sst.Stack {
   constructor(scope: sst.App, id: string, props?: sst.StackProps) {
@@ -10,8 +9,18 @@ export default class MyStack extends sst.Stack {
       fields: {
         policyId: sst.TableFieldType.STRING,
         name: sst.TableFieldType.STRING,
+        basePrice: sst.TableFieldType.NUMBER
       },
       primaryIndex: { partitionKey: "policyId" },
+    });
+
+    const configTable = new sst.Table(this, "Configs", {
+      fields: {
+        configId: sst.TableFieldType.STRING,
+        value: sst.TableFieldType.STRING,
+
+      },
+      primaryIndex: { partitionKey: "configId" },
     });
 
     const breedsTable = new sst.Table(this, "Breeds", {
@@ -22,31 +31,30 @@ export default class MyStack extends sst.Stack {
         pet:  sst.TableFieldType.STRING,
       },
       primaryIndex: { partitionKey: "breedId" },
+      secondaryIndexes: {
+        breedPetIndex: { partitionKey: "breedId", sortKey: "pet" },
+      },
     });
 
-    // Create the HTTP API
     const api = new sst.Api(this, "Api", {
       defaultFunctionProps: {
         environment: {
           policiesTableName: policiesTable.dynamodbTable.tableName,
-          breedsTableName: breedsTable.dynamodbTable.tableName
+          breedsTableName: breedsTable.dynamodbTable.tableName,
+          configTableName: configTable.dynamodbTable.tableName
+
         },
       },
       routes: {
         "GET /policies": "src/list-policies.main",
         "POST /": "src/search.main",
-        //"GET    /notes": "src/list.main",
-        //"POST   /notes": "src/create.main",
         "GET    /breeds/{pet}": "src/list-breeds.main",
-        //"PUT    /notes/{id}": "src/update.main",
-        //"DELETE /notes/{id}": "src/delete.main",
       },
     });
 
-    // Allow the API to access the table
+
     api.attachPermissions([policiesTable, breedsTable]);
 
-    // Show API endpoint in output
     new cdk.CfnOutput(this, "ApiEndpoint", {
       value: api.httpApi.apiEndpoint,
     });
