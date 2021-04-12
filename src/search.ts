@@ -1,16 +1,17 @@
-import { APIGatewayProxyEventV2, APIGatewayProxyHandlerV2 } from "aws-lambda";
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 
-export const handler: APIGatewayProxyHandlerV2 = async (
-  event: APIGatewayProxyEventV2
-) => {
-  console.log(event)
 
+export async function main(
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> {
+  
+
+  if (event.body) {
+    const data = JSON.parse(event.body);
+  }
 
   return {
     statusCode: 200,
-    "headers": {
-      "content-type": "application/json"
-    },
     body: JSON.stringify([
       {
         "policyName": 'annual',
@@ -26,4 +27,4 @@ export const handler: APIGatewayProxyHandlerV2 = async (
       }
     ]),
   };
-};
+}
